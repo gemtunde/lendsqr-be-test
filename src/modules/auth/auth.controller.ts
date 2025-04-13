@@ -1,8 +1,12 @@
 import { Request, Response } from "express-serve-static-core";
 import { asyncHandler } from "@/middlewares/asyncHandler";
 import { AuthService } from "./auth.service";
-import { registerSchema } from "@/common/validators/auth.validator";
+import {
+  loginSchema,
+  registerSchema,
+} from "@/common/validators/auth.validator";
 import { HTTPSTATUS } from "@/config/http.config";
+import { setAuthenticationCookies } from "@/common/utils/cookies";
 
 export class AuthController {
   private authService: AuthService;
@@ -22,6 +26,37 @@ export class AuthController {
         message: "User registered successfully",
         data: user,
       });
+    }
+  );
+
+  public login = asyncHandler(
+    async (req: Request, res: Response): Promise<any> => {
+      const userAgent = req.headers["user-agent"];
+      const body = loginSchema.parse({
+        ...req.body,
+        userAgent,
+      });
+      const { loginUser, refreshToken, accessToken, mfaRequired } =
+        await this.authService.login(body);
+
+      if (mfaRequired) {
+        return res.status(HTTPSTATUS.OK).json({
+          message: "Verify MFA Authentication",
+          mfaRequired,
+          loginUser,
+        });
+      }
+      return setAuthenticationCookies({
+        res,
+        refreshToken,
+        accessToken,
+      })
+        .status(HTTPSTATUS.OK)
+        .json({
+          message: "User login successfully",
+          mfaRequired,
+          loginUser,
+        });
     }
   );
 }

@@ -4,3 +4,13 @@ export interface RegisterDto {
   password: string;
   confirmPassword: string;
 }
+
+export interface LoginDto {
+  email: string;
+  password: string;
+  userAgent?: string;
+}
+export interface resetPasswordDto {
+  verificationCode: string;
+  password: string;
+}
