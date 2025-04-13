@@ -48,7 +48,7 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-userSchema.methods.comparePassword = async function (value) {
+userSchema.methods.comparePassword = async function (value: string) {
   return compareValue(value, this.password);
 };
 userSchema.set("toJSON", {

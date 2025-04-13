@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 //import { config } from "././config/app.config";
 import { config } from "@/config/app.config";
 import connectDatabase from "./database/database";
+import authRoutes from "./modules/auth/auth.routes";
+import { errorHandler } from "./middlewares/errorHandler";
 
 //const Port = 8000;
 
@@ -27,12 +29,9 @@ app.use(cookieParser());
 // app.use()
 
 //routes
-app.get("/", (req, res) => {
-  res.json({
-    message: "Welcome tunde",
-  });
-});
+app.use(`${BASE_PATH}/auth`, authRoutes);
 
+app.use(errorHandler);
 app.listen(config.PORT, async () => {
   console.log(`server running on port ${config.PORT}`);
   await connectDatabase();
