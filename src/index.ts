@@ -1,17 +1,24 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+//import { config } from "./config/app.config";
+//import connectDatabase from "./database/database";
+//import { config } from "././config/app.config";
+import { config } from "@/config/app.config";
+import connectDatabase from "./database/database";
 
-const Port = 8000;
+//const Port = 8000;
 
 const app = express();
+const BASE_PATH = config.BASE_PATH;
 
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    //  origin: ,
+    origin: config.APP_ORIGIN,
     credentials: true,
   })
 );
@@ -26,6 +33,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.listen(Port, () => {
-  console.log("server running on port 8000");
+app.listen(config.PORT, async () => {
+  console.log(`server running on port ${config.PORT}`);
+  await connectDatabase();
 });
