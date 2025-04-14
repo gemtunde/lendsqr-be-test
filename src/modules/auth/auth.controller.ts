@@ -4,6 +4,7 @@ import { AuthService } from "./auth.service";
 import {
   loginSchema,
   registerSchema,
+  verificationEmailSchema,
 } from "@/common/validators/auth.validator";
 import { HTTPSTATUS } from "@/config/http.config";
 import { setAuthenticationCookies } from "@/common/utils/cookies";
@@ -57,6 +58,16 @@ export class AuthController {
           mfaRequired,
           loginUser,
         });
+    }
+  );
+
+  public verifyEmail = asyncHandler(
+    async (req: Request, res: Response): Promise<any> => {
+      const { code } = verificationEmailSchema.parse(req.body);
+      await this.authService.verifyEmail(code);
+      return res.status(HTTPSTATUS.OK).json({
+        message: "Email verified successfully",
+      });
     }
   );
 }
