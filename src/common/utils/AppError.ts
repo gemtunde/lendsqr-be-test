@@ -13,7 +13,7 @@ export class AppError extends Error {
     super(message);
     this.statusCode = statusCode;
     this.errorCode = errorCode;
-    if (Error.captureStackTrace) {
+    if (typeof Error.captureStackTrace === "function") {
       Error.captureStackTrace(this, this.constructor);
     }
     // Error.captureStackTrace(this, this.constructor);
