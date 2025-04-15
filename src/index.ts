@@ -36,3 +36,4 @@ app.listen(config.PORT, async () => {
   console.log(`server running on port ${config.PORT}`);
   await connectDatabase();
 });
+export default app;
